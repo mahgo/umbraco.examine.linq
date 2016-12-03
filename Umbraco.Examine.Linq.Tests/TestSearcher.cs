@@ -15,5 +15,10 @@ namespace Umbraco.Examine.Linq.Tests
         {
             return new List<SearchResult>();
         }
+
+        public int Count(string query)
+        {
+            return 0;
+        }
     }
 }

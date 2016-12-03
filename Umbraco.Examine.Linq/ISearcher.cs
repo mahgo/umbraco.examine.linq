@@ -11,5 +11,7 @@ namespace Umbraco.Examine.Linq
     public interface ISearcher
     {
         IEnumerable<SearchResult> Search(string query, List<OrderByModel> orderings);
+
+        int Count(string query);
     }
 }

@@ -1,5 +1,7 @@
 ﻿using Examine;
 using Remotion.Linq;
+using Remotion.Linq.Clauses;
+using Remotion.Linq.Clauses.ResultOperators;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,17 +35,25 @@ namespace Umbraco.Examine.Linq
                 query += " NOT " + string.Join(" NOT ", visitor.notQueries); 
             }
 
-            var searchResults = Searcher.Search(query, visitor.orderings);
-
-            if (visitor.skip != -1)
-                searchResults = searchResults.Skip(visitor.skip);
-
-            if (visitor.take != -1)
+            ResultOperatorBase resultOperator = queryModel.ResultOperators.FirstOrDefault();
+            if (resultOperator is CountResultOperator)
             {
-                searchResults = searchResults.Take(visitor.take);
+                return (IEnumerable<T>)new List<int> { Searcher.Count(query) };
             }
+            else
+            { 
+                var searchResults = Searcher.Search(query, visitor.orderings);
 
-            return (IEnumerable<T>)Mapper.Map(searchResults);
+                if (visitor.skip != -1)
+                    searchResults = searchResults.Skip(visitor.skip);
+
+                if (visitor.take != -1)
+                {
+                    searchResults = searchResults.Take(visitor.take);
+                }
+
+                return (IEnumerable<T>)Mapper.Map(searchResults);
+            }
         }
 
         // Executes a query with a single result object, i.e. a query that ends with a result operator such as First, Last, Single, Min, or Max.

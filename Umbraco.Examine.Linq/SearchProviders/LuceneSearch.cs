@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using Umbraco.Examine.Linq.Models;
 using Remotion.Linq.Clauses;
 using Umbraco.Examine.Linq.Mapper;
+using Lucene.Net.Search;
 
 namespace Umbraco.Examine.Linq.SearchProviders
 {
@@ -36,6 +37,14 @@ namespace Umbraco.Examine.Linq.SearchProviders
             //searchCriteria = SearchHelper.AddOrderBy(searchCriteria, orderings);
             
             return searcher.Search(searchCriteria).ToList();
+        }
+
+        public int Count(string query)
+        {
+            LuceneSearcher searcher = ExamineManager.Instance.SearchProviderCollection[IndexName] as LuceneSearcher;
+            ISearchCriteria searchCriteria = searcher.CreateSearchCriteria().RawQuery(query);
+            ISearchResults searchResults = searcher.Search(searchCriteria);
+            return searchResults.TotalItemCount;
         }
     }
 }

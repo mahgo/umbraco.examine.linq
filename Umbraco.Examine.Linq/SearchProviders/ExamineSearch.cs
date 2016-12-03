@@ -46,5 +46,23 @@ namespace Umbraco.Examine.Linq.SearchProviders
 
             return searcher.Search(criteria);
         }
+
+        public int Count(string query)
+        {
+            ISearchCriteria criteria = null;
+            var searcher = ExamineManager.Instance.SearchProviderCollection[IndexName];
+
+            if (searchQueryCache.ContainsKey(query))
+                criteria = searchQueryCache[query];
+            else
+            {
+                criteria = searcher.CreateSearchCriteria();
+                criteria = criteria.RawQuery(query);
+                searchQueryCache.Add(query, criteria);
+            }
+
+            ISearchResults searchResults = searcher.Search(criteria);
+            return searchResults.TotalItemCount;
+        }
     }
 }
