@@ -8,6 +8,7 @@ using Umbraco.Examine.Linq.Attributes;
 using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using System.Linq.Expressions;
+using Umbraco.Examine.Linq.Models;
 
 namespace Umbraco.Examine.Linq
 {
@@ -15,6 +16,7 @@ namespace Umbraco.Examine.Linq
     {
         public List<StringBuilder> andQueries = new List<StringBuilder>();
         public List<StringBuilder> notQueries = new List<StringBuilder>();
+        public List<OrderByModel> orderings = new List<OrderByModel>();
         public int take = -1;
         public int skip = -1;
 
@@ -68,6 +70,22 @@ namespace Umbraco.Examine.Linq
                     skip = (int)((ConstantExpression)((SkipResultOperator)resultOperator).Count).Value;
             }
             base.VisitQueryModel(queryModel);
+        }
+
+        public override void VisitOrderByClause(OrderByClause orderByClause, QueryModel queryModel, int index)
+        {
+            if (orderByClause != null && orderByClause.Orderings != null)
+            {
+                foreach (Ordering ordering in orderByClause.Orderings)
+                {
+                    MemberExpression expression = (MemberExpression)ordering.Expression;
+                    OrderByModel orderByModel = new OrderByModel(ordering.OrderingDirection, expression.Member.Name);
+                    this.orderings.Add(orderByModel);
+                }
+            }
+
+                  
+            base.VisitOrderByClause(orderByClause, queryModel, index);
         }
     }
 }

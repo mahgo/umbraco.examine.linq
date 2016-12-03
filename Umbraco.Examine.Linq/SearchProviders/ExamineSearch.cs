@@ -7,6 +7,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Umbraco.Examine.Linq.Mapper;
+using Umbraco.Examine.Linq.Models;
 
 namespace Umbraco.Examine.Linq.SearchProviders
 {
@@ -26,7 +28,7 @@ namespace Umbraco.Examine.Linq.SearchProviders
             IndexName = indexName;
         }
 
-        public IEnumerable<SearchResult> Search(string query)
+        public IEnumerable<SearchResult> Search(string query, List<OrderByModel> orderings)
         {
             ISearchCriteria criteria = null;
             var searcher = ExamineManager.Instance.SearchProviderCollection[IndexName];
@@ -39,6 +41,8 @@ namespace Umbraco.Examine.Linq.SearchProviders
                 criteria = criteria.RawQuery(query);
                 searchQueryCache.Add(query, criteria);
             }
+
+            //criteria = SearchHelper.AddOrderBy(criteria, orderings);
 
             return searcher.Search(criteria);
         }

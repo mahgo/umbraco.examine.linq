@@ -33,7 +33,7 @@ namespace Umbraco.Examine.Linq
                 query += " NOT " + string.Join(" NOT ", visitor.notQueries); 
             }
 
-            var searchResults = Searcher.Search(query);
+            var searchResults = Searcher.Search(query, visitor.orderings);
 
             if (visitor.skip != -1)
                 searchResults = searchResults.Skip(visitor.skip);

@@ -6,6 +6,10 @@ using System.Threading.Tasks;
 using Examine;
 using Examine.LuceneEngine.Providers;
 using Examine.SearchCriteria;
+using System.Linq.Expressions;
+using Umbraco.Examine.Linq.Models;
+using Remotion.Linq.Clauses;
+using Umbraco.Examine.Linq.Mapper;
 
 namespace Umbraco.Examine.Linq.SearchProviders
 {
@@ -25,10 +29,13 @@ namespace Umbraco.Examine.Linq.SearchProviders
             IndexName = indexName;
         }
 
-        public IEnumerable<SearchResult> Search(string query)
+        public IEnumerable<SearchResult> Search(string query, List<OrderByModel> orderings)
         {
             LuceneSearcher searcher = ExamineManager.Instance.SearchProviderCollection[IndexName] as LuceneSearcher;
-            return searcher.Search(searcher.CreateSearchCriteria().RawQuery(query)).ToList();
+            ISearchCriteria searchCriteria = searcher.CreateSearchCriteria().RawQuery(query);
+            //searchCriteria = SearchHelper.AddOrderBy(searchCriteria, orderings);
+            
+            return searcher.Search(searchCriteria).ToList();
         }
     }
 }
