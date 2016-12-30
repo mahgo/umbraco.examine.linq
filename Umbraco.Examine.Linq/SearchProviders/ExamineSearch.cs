@@ -42,7 +42,7 @@ namespace Umbraco.Examine.Linq.SearchProviders
                 searchQueryCache.Add(query, criteria);
             }
 
-            //criteria = SearchHelper.AddOrderBy(criteria, orderings);
+            criteria = SearchHelper.AddOrderBy(criteria, orderings);
 
             return searcher.Search(criteria);
         }

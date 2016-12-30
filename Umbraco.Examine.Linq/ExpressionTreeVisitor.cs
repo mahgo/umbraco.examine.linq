@@ -132,7 +132,7 @@ namespace Umbraco.Examine.Linq
             return expression;
         }
 
-        protected FieldAttribute GetReferenceSourceAttributeOrSelf(MemberExpression memberExp)
+        public static FieldAttribute GetReferenceSourceAttributeOrSelf(MemberExpression memberExp)
         {
             //if(memberInfo is GetReferenceSourceAttributeOrSelf)
             if (!(memberExp.Expression is QuerySourceReferenceExpression))

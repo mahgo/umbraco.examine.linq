@@ -79,13 +79,28 @@ namespace Umbraco.Examine.Linq
                 foreach (Ordering ordering in orderByClause.Orderings)
                 {
                     MemberExpression expression = (MemberExpression)ordering.Expression;
-                    OrderByModel orderByModel = new OrderByModel(ordering.OrderingDirection, expression.Member.Name);
+                    OrderByModel orderByModel = new OrderByModel(ordering.OrderingDirection, GetFieldAttribute(expression));
                     this.orderings.Add(orderByModel);
                 }
             }
-
                   
             base.VisitOrderByClause(orderByClause, queryModel, index);
+        }
+
+        private string GetFieldAttribute(MemberExpression expression)
+        {
+            FieldAttribute fieldAttribute = ExpressionTreeVisitor.GetReferenceSourceAttributeOrSelf(expression);
+            string fieldName;
+            if (fieldAttribute != null)
+            {
+                fieldName = fieldAttribute.Name;
+            }
+            else
+            {
+                fieldName = expression.Member.Name;
+            }
+
+            return fieldName;
         }
     }
 }

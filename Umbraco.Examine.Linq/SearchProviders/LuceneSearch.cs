@@ -34,7 +34,7 @@ namespace Umbraco.Examine.Linq.SearchProviders
         {
             LuceneSearcher searcher = ExamineManager.Instance.SearchProviderCollection[IndexName] as LuceneSearcher;
             ISearchCriteria searchCriteria = searcher.CreateSearchCriteria().RawQuery(query);
-            //searchCriteria = SearchHelper.AddOrderBy(searchCriteria, orderings);
+            searchCriteria = SearchHelper.AddOrderBy(searchCriteria, orderings);
             
             return searcher.Search(searchCriteria).ToList();
         }
