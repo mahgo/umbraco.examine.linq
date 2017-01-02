@@ -1,4 +1,5 @@
-﻿using Examine.SearchCriteria;
+﻿using Examine.LuceneEngine.SearchCriteria;
+using Examine.SearchCriteria;
 using Remotion.Linq.Clauses;
 using System;
 using System.Collections.Generic;
@@ -20,22 +21,22 @@ namespace Umbraco.Examine.Linq.Mapper
                 {
                     if (boolOperation != null)
                     {
-                        boolOperation = boolOperation.And().OrderBy(orderByModel.Field);
+                        boolOperation = boolOperation.And().OrderBy(orderByModel.Field, orderByModel.SortType);
                     }
                     else
                     {
-                        boolOperation = searchCriteria.OrderBy(orderByModel.Field);
+                        boolOperation = searchCriteria.OrderBy(orderByModel.Field, orderByModel.SortType);
                     }
                 }
                 else
                 {
                     if (boolOperation != null)
                     {
-                        boolOperation = boolOperation.And().OrderByDescending(orderByModel.Field);
+                        boolOperation = boolOperation.And().OrderByDescending(orderByModel.Field, orderByModel.SortType);
                     }
                     else
                     {
-                        boolOperation = searchCriteria.OrderByDescending(orderByModel.Field);
+                        boolOperation = searchCriteria.OrderByDescending(orderByModel.Field, orderByModel.SortType);
                     }
                 }
             }
@@ -46,6 +47,30 @@ namespace Umbraco.Examine.Linq.Mapper
             }
 
             return searchCriteria;
+        }
+
+        public static IBooleanOperation OrderBy(this IQuery query, string field, SortType? sortType)
+        {
+            if (sortType.HasValue)
+            {
+                return query.OrderBy(new SortableField(field, sortType.Value));
+            }
+            else
+            {
+                return query.OrderBy(new SortableField(field));
+            }
+        }
+
+        public static IBooleanOperation OrderByDescending(this IQuery query, string field, SortType? sortType)
+        {
+            if (sortType.HasValue)
+            {
+                return query.OrderByDescending(new SortableField(field, sortType.Value));
+            }
+            else
+            {
+                return query.OrderByDescending(new SortableField(field));
+            }
         }
     }
 }

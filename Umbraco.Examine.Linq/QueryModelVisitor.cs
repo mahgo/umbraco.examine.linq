@@ -9,6 +9,7 @@ using Remotion.Linq.Clauses;
 using Remotion.Linq.Clauses.ResultOperators;
 using System.Linq.Expressions;
 using Umbraco.Examine.Linq.Models;
+using Examine.LuceneEngine.SearchCriteria;
 
 namespace Umbraco.Examine.Linq
 {
@@ -79,7 +80,7 @@ namespace Umbraco.Examine.Linq
                 foreach (Ordering ordering in orderByClause.Orderings)
                 {
                     MemberExpression expression = (MemberExpression)ordering.Expression;
-                    OrderByModel orderByModel = new OrderByModel(ordering.OrderingDirection, GetFieldAttribute(expression));
+                    OrderByModel orderByModel = new OrderByModel(ordering.OrderingDirection, GetFieldAttribute(expression), GetSortType(expression));
                     this.orderings.Add(orderByModel);
                 }
             }
@@ -101,6 +102,31 @@ namespace Umbraco.Examine.Linq
             }
 
             return fieldName;
+        }
+
+        /// <summary>
+        /// We do this mostly due to an issue with sorting by Int without using <see cref="SortableField"/> not working
+        /// </summary>
+        /// <param name="expression"></param>
+        /// <returns></returns>
+        private SortType? GetSortType(MemberExpression expression)
+        {
+            SortType? sortType = null;
+            string typeName = expression.Type.Name;
+            switch (typeName)
+            {
+                case "String":
+                    sortType = SortType.String;
+                    break;
+                case "Int32":
+                    sortType = SortType.Int;
+                    break;
+                case "Int64":
+                    sortType = SortType.Long;
+                    break;
+            }
+
+            return sortType;
         }
     }
 }

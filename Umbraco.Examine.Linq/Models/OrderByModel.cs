@@ -1,4 +1,5 @@
-﻿using Remotion.Linq.Clauses;
+﻿using Examine.LuceneEngine.SearchCriteria;
+using Remotion.Linq.Clauses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,11 +12,13 @@ namespace Umbraco.Examine.Linq.Models
     {
         public OrderingDirection Direction { get; set; }
         public string Field { get; set; }
+        public SortType? SortType { get; set; }
 
-        public OrderByModel(OrderingDirection direction, string field)
+        public OrderByModel(OrderingDirection direction, string field, SortType? sortType)
         {
             this.Direction = direction;
             this.Field = field;
+            this.SortType = sortType;
         }
     }
 }
