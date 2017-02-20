@@ -36,7 +36,7 @@ namespace Umbraco.Examine.Linq.SearchProviders
             ISearchCriteria searchCriteria = searcher.CreateSearchCriteria().RawQuery(query);
             searchCriteria = SearchHelper.AddOrderBy(searchCriteria, orderings);
             
-            return searcher.Search(searchCriteria).ToList();
+            return searcher.Search(searchCriteria);
         }
 
         public int Count(string query)
